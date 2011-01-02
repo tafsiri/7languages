@@ -55,7 +55,6 @@ fakeClosure fibmemo := method(num,
       )
     one + two
   )
-  if
   fibhelp(num,memo)
 )
 #not really necessary, but i wanted it to be uniform with the other calls
