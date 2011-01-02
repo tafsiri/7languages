@@ -83,7 +83,7 @@ Rect := Shape clone
 Square := Shape clone
 Ellipse := Shape clone
 
-#making objects (without a type field, not the lowercase start
+#making objects (without a type field, note the lowercase start
 #to the variable name)
 box := Rect clone 
 boxyBox := Square clone 
