@@ -102,3 +102,4 @@ Shape slotNames println       # => list(height, type, width, area)
 
 #seems like hasSlot will crawl up the inheritance tree
 box hasSlot("area") println # => true
+Rect hasSlot("area") println # => true
