@@ -47,7 +47,7 @@ List myAverage := method(
   self sum / self size
   )
   
-l := list(1,2,3,4,5)
+l := list(1,2,2,4,5)
 l myAverage println  #will throw an exception if there are no numbers in the list
 
 bl := list(1,2,"bananas",4,5)
@@ -64,8 +64,81 @@ List mymyAverage := method(
   )
 
 bbl := list(1,2,"bananas",4,5)
-bbl mymyAverage println  #will throw my exception
+#bbl mymyAverage println  #will throw my exception
 
 #Q5  Write a prototype for a two-dimensional list.
 #    dim(x,y) should allocate a list of y lists that are x elements long
 #    implement set(x,y) and get(x,y)
+"\n" println
+Table := Object clone
+
+Table dim := method(length, height,
+  self _length := length
+  self _height := height
+  self _data := list setSize(length)
+  for(i, 0, _data size - 1 , 1,
+      _data atPut(i, list setSize(height))
+    )
+  )
+  
+Table print := method(
+  "" println
+  for(i, 0, _data size - 1 , 1,
+      _data at(i) println
+    )
+  "" println
+  )
+
+Table set := method(x, y, val,
+  if(x > _length or y > _height
+    , Exception raise("Out of bounds")
+    , self _data at(x) atPut(y, val)
+    )
+  )
+
+Table get := method(x, y,
+  if(x > _length or y > _height
+    , Exception raise("Out of bounds")
+    , _data at(x) ?at(y)
+    )
+  )
+  
+table := Table clone
+table dim(3,2)
+table get(0,0) # 2> nil
+table set(0,0,1)
+table set(0,1,1)
+table get(0,0) # => 1
+table print
+
+#Q6 Write a transpose method for the two dimensional list above
+
+Table transpose := method(
+  other := Table clone
+  other dim(self _height, self _length)
+  
+  for(i, 0, _length - 1 , 1,
+      for(j, 0, _height - 1 , 1,
+         other set(j,i, get(i,j))
+        )
+    )
+  return other
+  )
+  
+t2 := table transpose
+t2 print
+(t2 get(0,1) == table get(1,0)) #=> true
+
+#Q7 Write the matrix to a file
+
+Table printToFile := method(file,
+  for(i, 0, _data size - 1 , 1,
+      file write(_data at(i) asString)
+      file write("\n")
+    )
+  )
+
+f := File with("day2_out.txt")
+f openForUpdating
+t2 printToFile(f)
+f close
