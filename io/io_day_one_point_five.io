@@ -1,3 +1,5 @@
+#exploring iterating through list and map data-structures in Io
+
 l := list(1,2,3,4,5,6)
 l foreach(index, value, value println)
 l foreach(value, value println)
