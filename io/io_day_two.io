@@ -1,3 +1,63 @@
+#Reflection IO
+
+Echo := Object clone
+Echo who := method(
+  call sender type println   # => Object
+  call message name println  # => who
+  call target type println   # => Echo
+  )
+
+#messages povide access to the entire tree of messages for the program.
+Echo context := method(
+  call message asSimpleString println
+  call message next next asSimpleString println
+  call message next next next asSimpleString println
+  )
+Echo who #=> Object, who, Echo
+"\n" println
+Echo context
+"\n" println
+
+#all Io methods have variable arity
+Echo howmany := method(
+  args := call message arguments
+  (args size asString .. " arguments passed in.") println
+  args foreach(arg,
+    arg println
+    )
+  )
+
+Echo howmany("we", "can", "send", list(3,4,5,6,100), "many", "args")
+Echo howmany("or", "justafew")
+
+"\n" println
+
+Delay := Object clone
+Delay send := method(
+  args := call message arguments
+  for(i,0, args size - 1, 2,
+    delay := doMessage(args at(i)) #do message turns the unevaluated '2' message into a '2' number
+    msg := args at(i+1)
+
+    System sleep(delay)
+    msg doInContext(call sender) #thought i'd be able to do 'call sender msg' but that does not work
+    )
+  )
+
+
+Me := Object clone
+Date asString("%H:%M:%S") println
+#"Hello There! the time is " ..
+Me time := method(at, "Hello There! the time is " .. at asString("%H:%M:%S") println)
+Me delayMsgs := method(Delay send(1, time(Date now), 
+                                  3, time(Date now),
+                                  5, time(Date now)))
+
+Me delayMsgs
+
+
+#Self-study questions
+
 #Q1. write code to compute a fibonnaci sequence
 #A1. Did this on day one :)
 
