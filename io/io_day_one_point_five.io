@@ -36,8 +36,11 @@ printFruit := method(fruit,col,
 m foreach(k,v, printFruit(k,v)) #does the same as above
 m map(k,v, printFruit(k,v))
 
+writeln("")
+
 #Blocks vs methods - fibmemo from io_day_one.io
 #fib with memoization
+
 fakeClosure := Object clone do(
   memo := Map clone
   fibmemo := block(num, #note 'blocks' are lexically scoped
@@ -61,4 +64,33 @@ fakeClosure := Object clone do(
 )
 
 fibmemo := fakeClosure getSlot("fibmemo")
-fibmemo(12) println
+fibmemo(12) println 
+
+#get rid of the object and just use a method as a container
+fibmemoclosure := method(num,
+  memo := Map clone
+  fibmemo := block(num, #note 'blocks' are lexically scoped
+    memo atPut(0 asString, 0)
+    memo atPut(1 asString, 1)
+    fibhelp := method(num,
+      #"in fibhelp  " .. num println
+      #memo asJson println
+      one := memo at((num-1) asString)
+      two := memo at((num-2) asString)
+      if(one == nil
+        , one = fibhelp(num-1,memo)
+          memo atPut((num-1) asString, one)
+        )
+      if(two == nil
+        , two = fibhelp(num-2,memo)
+          memo atPut((num-2) asString, two)
+        )
+      one + two
+    )
+    fibhelp(num,memo)
+  )
+  return fibmemo
+) call setIsActivatable(true)
+
+
+fibmemoclosure(12) println
