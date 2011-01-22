@@ -73,7 +73,6 @@ fibmemoclosure := method(num,
     memo atPut(0 asString, 0)
     memo atPut(1 asString, 1)
     fibhelp := method(num,
-      #"in fibhelp  " .. num println
       #memo asJson println
       one := memo at((num-1) asString)
       two := memo at((num-2) asString)
