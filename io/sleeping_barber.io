@@ -14,6 +14,8 @@ Barber := Object clone do(
     sleeping = true
   )
   
+  asleep := method(sleeping)
+  
   cutHair := method(customer, inWaitingRoom,
     if(sleeping == true, wakeup)
     #remove them from the waiting room
@@ -27,6 +29,7 @@ Barber := Object clone do(
   )
   
   work := method(
+    if(WaitingRoom empty == false and sleeping == true, Exception raise("Lazy Barber!"))
     if(WaitingRoom empty and sleeping == false, sleep)
   )
 
@@ -82,7 +85,11 @@ Customer := Object clone do(
     #wait a random amount of time before going to the barber
     wait(Random value(0,4))
     (name .. ": going to the barber!") println
-    takeSeatOrLeave()
+    if(Barber asleep
+      ,requestHaircut(false)
+      ,takeSeatOrLeave()
+    )
+    
   )
 ) 
 
