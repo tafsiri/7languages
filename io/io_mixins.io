@@ -11,6 +11,12 @@ Object mix := method(obj,
     )
   )
 
+#alternative way to do mixins
+Object include := method(obj,
+  mixer := call target
+  mixer appendProto(obj)
+  )
+
 Comparator := Object clone do(
   < := method(other,  compareTo(other) < 0)
   > := method(other,  compareTo(other) > 0)
@@ -18,7 +24,9 @@ Comparator := Object clone do(
   )
 
 StrangeNum := Object clone do(
-  mix(Comparator)
+  init := method(
+    mix(Comparator)
+  )
   
   #for some bizzare reason we want to sort by the squares of [value]
   compareTo := method(other,
