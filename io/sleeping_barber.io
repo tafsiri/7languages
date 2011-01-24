@@ -71,8 +71,7 @@ Customer := Object clone do(
     
   requestHaircut := method(inWaitingRoom,
     result := Barber @cutHair(self, inWaitingRoom)
-    while(result != "done", yield) #this will block the current coroutine (and automatically yield)
-    leave("happy")
+    if(result == "done", leave("happy")) #this will block the current coroutine (and automatically yield)
   )
     
   leave := method(state,
@@ -81,7 +80,6 @@ Customer := Object clone do(
   )
   
   gotoBarber := method(
-    currentCoro setLabel(name)
     #wait a random amount of time before going to the barber
     wait(Random value(0,4))
     (name .. ": going to the barber!") println
