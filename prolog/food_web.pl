@@ -29,7 +29,7 @@ eats(bald_eagle, large_piscivorous_fish).
 eats(osprey, large_piscivorous_fish).
 
 /* define the extinct rule, so that prolog doesn't complain it doesn't
-   exist for non extinct creatures */
+   exist if there are no extinct creatures */
 extinct(dodo).
 extinct(small_planktivorous_fish).
 
