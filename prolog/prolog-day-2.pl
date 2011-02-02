@@ -25,7 +25,7 @@ max([Head|Tail], Ans) :- max(Tail, Sub),
                          Ans is max(Head, Sub).
                          
 
-/*The following is a pretty hacky wy of sorting. The first solution that satisfies
+/*The following is a pretty hacky way of sorting. The first solution that satisfies
  ysort will be correct, however it will continue to generate an infinite number 
  of (incorrect and longer) solutions. lsub also generates multiple answers, only the
  first one is correct. I don't have enough understanding of prolog at the moment to 
