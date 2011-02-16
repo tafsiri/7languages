@@ -1,4 +1,9 @@
-magic_square(Puzzle, Solution) :-
+/* 
+  Generates 3x3 magic squares in prolog
+  http://en.wikipedia.org/wiki/Magic_square
+*/
+
+magic_square(Puzzle, Solution, Sum) :-
   Puzzle = [S11, S12, S13,
             S21, S22, S23,
             S31, S32, S33],
@@ -35,4 +40,5 @@ magic_square(Puzzle, Solution) :-
   Sum6 = Sum7,
   Sum7 = Sum8,
 
+  Sum = Sum8,
   Solution = Puzzle.
