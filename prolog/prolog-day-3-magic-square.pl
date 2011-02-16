@@ -9,17 +9,20 @@ magic_square(Puzzle, Solution, Sum) :-
             S31, S32, S33],
 
   fd_all_different(Puzzle),
-  fd_domain(Puzzle, 1, 9),
+  fd_domain(Puzzle, 1, 30),
   fd_labeling(Puzzle),   /* This line is very important to actually seeing the answers*/
   
+  /* Rows */
   R1 = [S11, S12, S13],
   R2 = [S21, S22, S23],
   R3 = [S31, S32, S33],
   
+  /* Columns */  
   C1 = [S11, S21, S31],
   C2 = [S12, S22, S32],
   C3 = [S13, S23, S33],
   
+  /* Diagonals */  
   Diag1 = [S11, S22, S33],
   Diag2 = [S13, S22, S31],
 
