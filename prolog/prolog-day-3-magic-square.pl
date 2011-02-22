@@ -9,7 +9,7 @@ magic_square(Puzzle, Solution, Sum) :-
             S31, S32, S33],
 
   fd_all_different(Puzzle),
-  fd_domain(Puzzle, 1, 30),
+  fd_domain(Puzzle, 1, 9),
   fd_labeling(Puzzle),   /* This line is very important to actually seeing the answers*/
   
   /* Rows */
