@@ -1,0 +1,106 @@
+size(600, 400)
+frameRate(30)
+smooth()
+
+//make some nodes
+val nodes = (1 until 20).map(n => new Node(n * 30 , 200))
+
+//set their left neighbours
+nodes.sliding(2).foreach(pair => {
+  pair.head.rightNeighbour = pair.last
+  pair.last.leftNeighbour = pair.head
+})
+
+nodes.head.leftNeighbour = nodes.last
+nodes.last.rightNeighbour = nodes.head
+
+var selected = nodes.head
+
+def draw {
+  background(40)
+  nodes.foreach(node => {
+    node.step()
+    node.draw(selected == node)
+  })
+}
+
+override def keyPressed() {
+  if(key == CODED) {
+    if(keyCode == LEFT) {
+      selected = selected.leftNeighbour
+    }
+    else if(keyCode == RIGHT){
+      selected = selected.rightNeighbour
+    }
+    else if(keyCode == UP){
+      selected.push('UP )
+    }
+    else if(keyCode == DOWN){
+      selected.push('DOWN )
+    }
+  }
+}
+
+class Node(var x:Int, var y:Int){ 
+  //spring physics code from http://processing.org/learning/topics/spring.html
+  
+  // Spring simulation constants
+  val M = 1.5       // Mass
+  val K = 0.2       // Spring constant
+  val D = 0.93      // Decay
+  val R = (x, y)    // Rest position  
+  
+  // Spring simulation variables
+  var velocity = (0.0, 0.0)
+  var acceleration = (0.0, 0.0)
+  var force = (0.0, 0.0);
+  var impulse = Array(0.0, 0.0);
+  
+  //other props
+  var size = 15
+  var leftNeighbour:Node = _ //you can't just not initialize a var in scala, you need at least _
+  var rightNeighbour:Node = _
+  
+  def draw(isSelected:Boolean) = {
+    noStroke
+    if(isSelected){
+      fill(255,0,0)
+    } else {
+      fill(255)
+    }
+    ellipse(x, y, size, size)
+  }
+  
+  def step(){
+    var gfy = -K * (y - R._2)
+    var gfx = -K * (x - R._1)
+    force = (impulse(0) + force._1 + gfx, impulse(1) + gfy) //the individual parts of a tuple are vals. so cant reassign them individuallyy
+    //update the acceleration
+    acceleration = (force._1 / M, force._2 / M)    
+    //update the velocity
+    velocity = (D * (velocity._1 + acceleration._1), D * (velocity._2 + acceleration._2))
+    //update the position
+    x = (x + velocity._1).toInt
+    y = (y + velocity._2).toInt
+    
+    //if(impulse(0) != 0) { impulse(0) = 0 }
+    //if(impulse(1) != 0) { impulse(1) = 0 }
+    impulse(0) *= (D / 2)
+    impulse(1) *= (D / 2)
+  }
+  
+  def push(direction:Symbol, amount:Float = 20):Unit = {
+    direction match {
+      case 'UP => {
+        impulse(1) -= amount
+      }
+      case 'DOWN => {
+        impulse(1) += amount
+      }
+    }
+    if(amount > 2){
+      rightNeighbour.push(direction, amount / 1.5)
+      //leftNeighbour.push(direction, amount / 1.5)
+    }
+  }
+}

@@ -1,6 +1,7 @@
 val words = List("this", "is", "a", "list", "of", "strings")
 
-//foldLeft function (currried)
+//foldLeft function (curried)
+//these examples show how to pass a code block
 var size = words.foldLeft(0)((sum, word) => sum + 1)
 var charCount = words.foldLeft(0)((sum, word) => sum + word.length())
 
