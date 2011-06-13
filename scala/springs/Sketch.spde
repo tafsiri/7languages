@@ -1,9 +1,18 @@
-size(600, 400)
+import scala.actors._
+import scala.actors.Actor._
+
+import ddf.minim._;
+import ddf.minim.ugens._
+ 
+val minim = new Minim(this.applet)
+
+
+size(400, 250)
 frameRate(30)
 smooth()
 
 //make some nodes
-val nodes = (1 until 20).map(n => new Node(n * 30 , 200))
+val nodes = (1 until 10).map(n => new Node(n * 30 , 200))
 
 //set their left neighbours
 nodes.sliding(2).foreach(pair => {
@@ -15,6 +24,11 @@ nodes.head.leftNeighbour = nodes.last
 nodes.last.rightNeighbour = nodes.head
 
 var selected = nodes.head
+
+//start the node actors
+nodes.foreach(node => {
+  node.start()
+})
 
 def draw {
   background(40)
@@ -41,7 +55,12 @@ override def keyPressed() {
   }
 }
 
-class Node(var x:Int, var y:Int){ 
+def stop() = {
+  //out.close
+  applet.stop()
+}
+
+class Node(var x:Int, var y:Int) extends Actor{ 
   //spring physics code from http://processing.org/learning/topics/spring.html
   
   // Spring simulation constants
@@ -61,10 +80,16 @@ class Node(var x:Int, var y:Int){
   var leftNeighbour:Node = _ //you can't just not initialize a var in scala, you need at least _
   var rightNeighbour:Node = _
   
+  val rnd = new scala.util.Random
+  
+  val unotes = List("A4","B4","C4","D4","E4","F4","G4")
+  val dnotes = List("A3","B3","C3","D3","E3","F3","G3")
+  val out = minim.getLineOut();
+  
   def draw(isSelected:Boolean) = {
     noStroke
     if(isSelected){
-      fill(255,0,0)
+      fill(255, 0, 0)
     } else {
       fill(255)
     }
@@ -83,13 +108,48 @@ class Node(var x:Int, var y:Int){
     x = (x + velocity._1).toInt
     y = (y + velocity._2).toInt
     
-    //if(impulse(0) != 0) { impulse(0) = 0 }
-    //if(impulse(1) != 0) { impulse(1) = 0 }
     impulse(0) *= (D / 2)
     impulse(1) *= (D / 2)
   }
   
-  def push(direction:Symbol, amount:Float = 20):Unit = {
+  //
+  //We can replace this with the more generic resuable version
+  //below
+  //
+  // var lastCalled = System.currentTimeMillis();
+  //   def onlyAfter(time:Int, function: () => Unit):Unit = {
+  //     if((System.currentTimeMillis() - lastCalled) > time){
+  //       function()
+  //       lastCalled = System.currentTimeMillis()
+  //     }
+  //   }
+  
+  //basically returns a function that captures the lastCalled var
+  //we can have as many devouncers as we want without having to explicitly
+  //manage a map of timers to track when the functions they watch over were
+  //last called
+  def makeDebouncer():Function2[Int, () => Unit,Unit] = {
+    return new Function2[Int, () => Unit,Unit]() {
+      var lastCalled = System.currentTimeMillis();
+      
+      def apply(time:Int, function: () => Unit):Unit = {
+        if((System.currentTimeMillis() - lastCalled) > time) {
+          function()
+          lastCalled = System.currentTimeMillis()
+        }
+      }
+    }
+  }
+  
+  val onlyAfter = makeDebouncer()
+  
+  def push(direction:Symbol, amount:Float = 15.0):Unit = {
+    onlyAfter(1500, () => {
+      val notes = if(direction == 'UP ) unotes else dnotes
+      //out.playNote( 2.0, 1.9, "E3" );
+      out.playNote( 0.0, 0.8, util.Random.shuffle(notes).head)
+    })
+    
     direction match {
       case 'UP => {
         impulse(1) -= amount
@@ -98,9 +158,21 @@ class Node(var x:Int, var y:Int){
         impulse(1) += amount
       }
     }
-    if(amount > 2){
-      rightNeighbour.push(direction, amount / 1.5)
-      //leftNeighbour.push(direction, amount / 1.5)
+    if(amount > 0.1){
+      rightNeighbour ! (direction, (amount / 2.0).toFloat) //the division returns a double
+      leftNeighbour ! (direction, (amount / 2.0).toFloat) 
     }
   }
+  
+  def act() = {
+    loop {
+      react {
+        case (direction:Symbol, amount:Float) => {
+          Thread.sleep(rnd.nextInt(600))
+          this ! push(direction, amount)
+        }
+      }
+    }
+  }
+  
 }
