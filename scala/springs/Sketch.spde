@@ -1,5 +1,5 @@
-import scala.actors._
-import scala.actors.Actor._
+//import scala.actors._
+//import scala.actors.Actor._
 
 import ddf.minim._;
 import ddf.minim.ugens._
@@ -12,7 +12,7 @@ frameRate(30)
 smooth()
 
 //make some nodes
-val nodes = (1 until 10).map(n => new Node(n * 30 , 200))
+val nodes = (1 until 13).map(n => new Node(n * 30 , 125))
 
 //set their left neighbours
 nodes.sliding(2).foreach(pair => {
@@ -26,9 +26,9 @@ nodes.last.rightNeighbour = nodes.head
 var selected = nodes.head
 
 //start the node actors
-nodes.foreach(node => {
-  node.start()
-})
+//nodes.foreach(node => {
+//  node.start()
+//})
 
 def draw {
   background(40)
@@ -60,7 +60,7 @@ def stop() = {
   applet.stop()
 }
 
-class Node(var x:Int, var y:Int) extends Actor{ 
+class Node(var x:Int, var y:Int) {//extends Actor{ 
   //spring physics code from http://processing.org/learning/topics/spring.html
   
   // Spring simulation constants
@@ -143,7 +143,7 @@ class Node(var x:Int, var y:Int) extends Actor{
   
   val onlyAfter = makeDebouncer()
   
-  def push(direction:Symbol, amount:Float = 15.0):Unit = {
+  def push(direction:Symbol, amount:Float = 20.0):Unit = {
     onlyAfter(1500, () => {
       val notes = if(direction == 'UP ) unotes else dnotes
       //out.playNote( 2.0, 1.9, "E3" );
@@ -158,12 +158,18 @@ class Node(var x:Int, var y:Int) extends Actor{
         impulse(1) += amount
       }
     }
-    if(amount > 0.1){
-      rightNeighbour ! (direction, (amount / 2.0).toFloat) //the division returns a double
-      leftNeighbour ! (direction, (amount / 2.0).toFloat) 
+    if(amount > 0.25){
+       val t = new Thread() {
+        override def run() {
+          Thread.sleep(rnd.nextInt(600))
+          rightNeighbour.push(direction, (amount / 2.5).toFloat) //the division returns a double
+          leftNeighbour.push(direction, (amount / 2.0).toFloat) 
+        }
+      }
+      t.start()
     }
   }
-  
+  /*
   def act() = {
     loop {
       react {
@@ -174,5 +180,6 @@ class Node(var x:Int, var y:Int) extends Actor{
       }
     }
   }
+  */
   
 }
