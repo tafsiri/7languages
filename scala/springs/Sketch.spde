@@ -12,7 +12,7 @@ frameRate(30)
 smooth()
 
 //make some nodes
-val nodes = (1 until 10).map(n => new Node(n * 30 , 200))
+val nodes = (1 until 13).map(n => new Node(n * 30 , 125))
 
 //set their left neighbours
 nodes.sliding(2).foreach(pair => {
