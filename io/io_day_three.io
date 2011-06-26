@@ -1,12 +1,14 @@
 #Create a list syntax that uses square brackets
 Object squareBrackets := method(
   #simply return the *list* of arguments passed in
-  call message arguments
+  call evalArgs
   )
   
-l := [1,2,3,4,5]
+#l := [1,2,3,4,5]
+l := ["one", "two", "three", "four", "five"]
 l type println    # => list
 l at(1) println   # => 2
+l at(1) type println
 
 #define a square brackets index syntax on lists
 List squareBrackets := method(index,
