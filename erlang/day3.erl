@@ -1,6 +1,5 @@
 % 1. Monitor the translator service and restart it if it dies. 
 %    (this is pretty much directly from the book)
-% 2. Make the monitor restart itself should it die
 
 -module(day3).
 -export([loop/0, translate/2]).
@@ -62,6 +61,3 @@ watch() ->
 % day3:translate(translator, "casa").
 % day3:translate(translator, "banjo").
 % day3:translate(translator, "mesa").
-
-
-% Make a pair of monitors that watch each other and restart each other. 
