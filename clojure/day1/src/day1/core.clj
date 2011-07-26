@@ -5,7 +5,8 @@
   "Returns true if string [str] is longer than [n]
    false otherwise"
    (> (count str) n))
-  
+
+;usage
 (big "hello" 2)
 (big "hello" 8)
 
@@ -27,7 +28,15 @@
     :else "None of the above"))
 
 
+;usage
+(collection-type [1,2,3])
+(collection-type '(1,2,3))
+(collection-type {:one 1, :two 2, :three 3})
+(collection-type "huh")
+
 (collection-type-cond [1,2,3])
 (collection-type-cond '(1,2,3))
 (collection-type-cond {:one 1, :two 2, :three 3})
 (collection-type-cond "huh")
+
+
