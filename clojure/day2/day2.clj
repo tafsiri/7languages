@@ -48,9 +48,13 @@
   (act-out [_] (println "I'm shutting down the studio!"))
   )
   
+;usage
+
+;create values of the two record types
 (def tyree (RealityStar. ))
 (def tron (RockStar. ))
 
+;call functions with the values. The correct implementation will be selected based on type
 (demand tyree)
 (demand tron)
 
