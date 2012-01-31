@@ -51,7 +51,7 @@ module Main where
     
   --pattern match two liner (just a shorter version of above)
   rev5 [] = []
-  rev5 (h:t) = rev4(t) ++ [h]
+  rev5 (h:t) = rev5(t) ++ [h]
     
     
   -- Q3. Write a function that builds 2-tuples with all possible combinations of two of the
