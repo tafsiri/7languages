@@ -55,6 +55,8 @@ module Main where
     in (sortBy left comparator) ++ [pivot] ++ (sortBy right comparator)
   
   --usage (will sort descending according to anon function passed in)
+  -- note (\x -> do stuff with x and return something) is the syntax for anonymous functions
+  -- in haskell
   sorted = sortBy [8,7,6,5,4,5,4,3] (\a b -> a >= b)
   
 -- Q3 Write a function that converts a string to a numerical type. The string is in the form
