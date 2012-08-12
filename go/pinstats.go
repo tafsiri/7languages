@@ -14,14 +14,14 @@ import (
 )
 
 func main() {
-  startTime := time.Now()
+	startTime := time.Now()
 	//Load our name databases
 	male := loadNames("male.names")
 	female := loadNames("female.names")
 
 	//Fetch the pinterest front page
 	pageContent, _ := getFrontPage()
-	
+
 	//Extract the names of the people pinning and those liking the pins
 	pinners := getPinners(pageContent)
 	likers := getPinCommenters(pageContent)
@@ -35,49 +35,49 @@ func main() {
 	for i := range likers {
 		firstNames = append(firstNames, strings.Split(likers[i], " ")[0])
 	}
-	
+
 	//Test the names with our primitive gender guesser
-	
+
 	//We will store the names for each match (or lack thereof) in a map of lists
-	results := map[string] []string {
-	  "Male": []string{}, 
-	  "Female": []string{}, 
-	  "Unisex": []string{}, 
-	  "Undetermined": []string{},
+	results := map[string][]string{
+		"Male":         []string{},
+		"Female":       []string{},
+		"Unisex":       []string{},
+		"Undetermined": []string{},
 	}
-	
+
 	//Test if a name is male, female, both or unknown
-  for _, name := range firstNames {
-    isMale := false
-    isFemale := false
-    name = strings.ToUpper(name)
-  
-    if male[name] {
-      isMale = true
-    }
-    if female[name]{
-      isFemale = true
-    }
-    
-    switch{
-    case isMale && isFemale:
-      results["Unisex"] = append(results["Unisex"], name)
-    case isMale:
-      results["Male"] = append(results["Male"], name)
-    case isFemale:
-      results["Female"] = append(results["Female"], name)
-    case true:
-      results["Undetermined"] = append(results["Undetermined"], name)
-    }
-  }
-  
-  //Print out results
-  endTime := time.Now()
-  fmt.Println("Results at", time.Now(), "Computed in", endTime.Sub(startTime))
-  fmt.Println(len(results["Female"]), " Women")
-  fmt.Println(len(results["Male"]), " Men")
-  fmt.Println(len(results["Unisex"]), " Unisex names:", results["Unisex"])
-  fmt.Println(len(results["Undetermined"]), " Undetermined:", results["Undetermined"])
+	for _, name := range firstNames {
+		isMale := false
+		isFemale := false
+		name = strings.ToUpper(name)
+
+		if male[name] {
+			isMale = true
+		}
+		if female[name] {
+			isFemale = true
+		}
+
+		switch {
+		case isMale && isFemale:
+			results["Unisex"] = append(results["Unisex"], name)
+		case isMale:
+			results["Male"] = append(results["Male"], name)
+		case isFemale:
+			results["Female"] = append(results["Female"], name)
+		case true:
+			results["Undetermined"] = append(results["Undetermined"], name)
+		}
+	}
+
+	//Print out results
+	endTime := time.Now()
+	fmt.Println("Results at", time.Now(), "Computed in", endTime.Sub(startTime))
+	fmt.Println(len(results["Female"]), " Women")
+	fmt.Println(len(results["Male"]), " Men")
+	fmt.Println(len(results["Unisex"]), " Unisex names:", results["Unisex"])
+	fmt.Println(len(results["Undetermined"]), " Undetermined:", results["Undetermined"])
 }
 
 //Loads the names in the file [fp] into a map. It assumes that 
@@ -89,7 +89,7 @@ func loadNames(fp string) map[string]bool {
 
 	names := map[string]bool{}
 	for _, line := range lines {
-	  name := strings.Trim(strings.Split(line, " ")[0], " ")
+		name := strings.Trim(strings.Split(line, " ")[0], " ")
 		names[name] = true
 	}
 	return names
